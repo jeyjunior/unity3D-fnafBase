@@ -1,19 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 
 public class CamControll : MonoBehaviour
 {
+    
+    
+    public GameController gc;
 
-    public Text textMensagem;
-
-    private void OnCollisionStay(Collision collision)
+    private void Start()
     {
-        if(collision.gameObject.name == "PC")
+        gc = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.name == "PC")
         {
-            textMensagem.text = "Press Enter to view the cams";
+            gc.onPC = true;
+            if (gc.onPC && Input.GetKeyDown(KeyCode.E))
+            {
+                gc.activeCams = true;
+                gc.panelMap.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.name == "PC")
+        {
+            gc.onPC = false; gc.activeCams = false;
         }
     }
 
