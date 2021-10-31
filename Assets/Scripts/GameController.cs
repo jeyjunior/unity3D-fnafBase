@@ -10,14 +10,14 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI textMensagem;
 
     public FirstPersonController playerMove;
-    public GameObject panelMap;
+    public GameObject panelMap, panelCams;
 
-    public GameObject cam1;
+    public GameObject playerCam, cam1, cam2;
 
     private void Start()
     {
         playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
-        panelMap.SetActive(false); //Desativa panelMap ao iniciar game
+        PanelsControll(false, false);
     }
 
     private void Update()
@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
 
 
 
-
+    //Com base na interação do player com o PC exibimos msgs ou desativamos/habilitamos move do player
     void CamsControll()
     {
         if (onPC && !activeCams)
@@ -41,7 +41,6 @@ public class GameController : MonoBehaviour
         {
             TextControll(false, "");
             PlayerMoveControll(false);
-
         }
         else if (!onPC)
         {
@@ -50,9 +49,9 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //Habilitar e desabilitar a movimentação do player qndo interagir com o PC
     void PlayerMoveControll(bool move)
     {
-        
         if (move) //Habilita movimentação do player
         {
             playerMove.enabled = true; 
@@ -65,8 +64,8 @@ public class GameController : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-        
     }
+
 
     void TextControll(bool value, string msg)
     {
@@ -74,10 +73,52 @@ public class GameController : MonoBehaviour
         textMensagem.text = msg;
     }
 
+
+
     //Botões
+    void PanelsControll(bool pMap, bool pCams)
+    {
+        panelMap.SetActive(pMap);
+        panelCams.SetActive(pCams);
+    }
+
+
     public void SairPanelMapa()
     {
-        panelMap.SetActive(false);
+        PanelsControll(false, false);
         activeCams = false;
     }
+    public void VoltarPanelCam()
+    {
+        PanelsControll(true, false);
+        EnabledCams(false, false);
+    }
+
+    #region Botão para habilitar/desabitar cameras
+    //Nome do btn define qual cam sera ativada
+    public void BtnCam(GameObject btn)
+    {
+        PanelsControll(false, true);
+        switch (btn.name)
+        {
+            case "cam1":
+                EnabledCams(true, false);
+                break;
+            case "cam2":
+                EnabledCams(false, true);
+                break;
+            default:
+                EnabledCams(false, false);
+                break;
+        }
+    }
+
+    void EnabledCams(bool c1, bool c2)
+    {
+        //Define qual cam fica ativada / desativada
+        cam1.SetActive(c1);
+        cam2.SetActive(c2);
+    }
+    #endregion
+
 }
